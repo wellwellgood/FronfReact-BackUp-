@@ -1,0 +1,346 @@
+@media (min-width: 375px) and (max-width: 768px) {
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    /*아이폰  14pro 사이즈*/
+    body {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        background: url(img/2151011516.jpg) right / cover no-repeat;
+        width: 100%;
+        min-height: 100vh;
+        overflow-Y: auto;
+    }
+    .box1 , .box3 , .container ,.frame{
+        display: none;
+    }
+
+    .box2{
+        border-radius: 30px;
+        margin: 5px;
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        border: none;
+    }
+    .box2:hover{
+        width: 100%;
+    }
+
+    .box2 .mainboard{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        margin: 2% 10%;
+        width: 80%;
+        height: 50px;
+        border-radius: 20px;
+        inset: 0;
+    }
+    .homepage{
+        height: 90%;
+    }
+    .project{
+        /* padding: 0 5%; */
+        font-size: 3px;
+        /* transition: 0.1s linear; */
+    }
+    .project a{
+        text-decoration: none;
+    }
+    .home{
+        list-style: none;
+        /*transform: translate(-50% , 0%);*/
+        font-size: 0;
+        border-radius: 15px;
+    }
+    .home button{
+        font-size: 18px;
+        width: 85px;
+        height: 60px;
+        border-radius: 15px;
+        /*background-color: rgba(160, 127, 253, 1);*/
+        transition: 0.1s linear;
+    }
+    .home button p{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        border-radius: 100%;
+        width: 65px;
+        height: 65px;
+        font-family: "Doto", sans-serif;
+        font-weight: bold;
+        border: 2px solid #000;
+        color: #fff;
+    }
+    .home button:hover{
+        text-shadow:  0px 0px 5px rgba(8, 254 , 254, 1) , 0px 0px 10px rgba(8, 254 , 254, 1) , 0px 0px 15px rgba(8, 254 , 254, 1) , 0px 0px 20px rgba(8, 254 , 254, 1);
+    }
+    .skill{
+        font-size: 3px;
+        /* padding: 0 5%; */
+    }
+    .skill a{
+        text-decoration: none;
+    }
+    .skill a button{
+        font-family: "Doto", sans-serif;
+        font-weight: bold;
+        font-size: 20px;
+        color: #000;
+    }
+    .homepage{
+        list-style: none;
+        overflow: scroll;
+    }
+    .homepage img{
+        display: none;
+    }
+    .homepagemobile{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        padding: 0 3%;
+        font-size: 12px;
+        
+    }
+    .homepagemobile img{
+        position: relative;
+        border: 1px solid #fff;
+        width: 50%;
+        height: 50%;
+        border-radius: 100%;
+        transition: 0.3s linear;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 30px;
+    }
+    .intro{
+        position: relative;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 98%;
+        font-family: 'TTLaundryGothicB';
+        color: #fff !important;
+    }
+    .info h1{
+        font-weight: 900;
+        font-size: 22px;
+        margin-bottom: 2px;
+        font-family: 'TTLaundryGothicB';
+    }
+    .intro p{
+        font-size: 18px;
+        font-weight: 900;
+    }
+    .intro .inst{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        width: 98%;
+        height: 500px;
+        margin-top: 30px;
+        background: rgba(205, 133, 63, 0.3);
+        padding: 30px;
+        border-radius: 30px;
+    }
+
+    .homepagemobile h1{
+        text-align: left;
+        margin:5px 0px;
+        color: #000;
+    }
+    .homepagemobile p{
+        color: #fff;
+    }
+    .homepage.box1{
+        border: none;
+    }
+    .projectpage{
+        list-style: none;
+        display: none;
+        /* overflow: scroll; */
+        scrollbar-width: none;
+    }
+    .project a{
+        text-decoration: none;
+    }
+    .project a button{
+        font-family: "Doto", sans-serif;
+        font-weight: 800;
+        font-size: 20px;
+        color: #000;
+    }
+    .skillpage{
+        list-style: none;
+        display: none;
+    }
+    .frame{
+        display: none;
+    }
+    .frame .mv{
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+    }
+    .textarea{
+        display: none;
+    }
+    .board{
+        position: absolute;
+        background: transparent;
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+        align-items: center;
+        justify-content: center;
+        width: 90%;
+        margin-left: 5%;
+        padding: 10px;
+        /* z-index: -99; */
+        overflow: scroll;
+        scrollbar-width: none;
+    }
+
+    .board .site{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        list-style: none;
+        float: left;
+        margin-bottom: 20px;
+        /* background-color:  #A07855; */
+        transition: box-shadow 0.2s ease;
+    }
+    .board .site:hover{
+        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 1);
+        transition: box-shadow 0.2s ease;
+    }
+    .board a{
+        position: relative; 
+        width: 100%;
+    }
+    .board img{
+        width: 100%;
+        object-fit: cover;
+        height: 390px;
+        border-radius: 10px;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    .board .site:nth-child(3) img{
+        width: 100%;
+        object-fit: cover;
+    }
+    .board .site:nth-child(4) img{
+        width: 100%;
+    }
+    .board .site .info{
+        border: none;
+        font-size: 1.5rem;
+        color: #000;
+        line-height: 32px;
+        font-weight: bold;
+        font-family: 'TTLaundryGothicB';
+        padding: 10px;
+    }
+    .skillpage{
+        display: none;
+        overflow: hidden;
+        width: 90%;
+        height: 85vh;
+        overflow: scroll;
+        scrollbar-width: none;
+    }
+    .skills{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .development{
+        width: 98%;
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        border: 2px solid #000;
+        border-radius: 10px;
+        overflow: hidden;
+        /* background-color: #A07855; */
+    }
+    .development h1{
+        padding: 0 30px;
+        font-family: "Song Myung", serif;
+        color: #000;
+        font-weight: bold;
+    }
+    .development ul{
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 50px;
+        padding: 10px;
+    }
+    .development:nth-child(3) img{
+        width: 150px;
+        height: 80px;
+    }
+    .development:nth-child(3)span{
+        margin-top: 30px;
+    }
+    .development li{
+        list-style: none;
+    }
+    .development ul li img{
+        width: 50px;
+        height: 50px;
+    }
+    .development:nth-child(3) ul li img{
+        width: 100%;
+        height: 50px;
+    }
+    .development span{
+        position: relative;
+        left: 0;
+        border: none;
+        margin: 10px;
+        height: 100%;
+        text-align: left;
+        padding: 10px;
+        color: #000;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .footer{
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 15px;
+        color: #fff;
+        transform: translate(0 , -50%);
+    }
+}

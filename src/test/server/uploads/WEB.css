@@ -1,0 +1,724 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Doto:wght@100..900&family=Noto+Sans+KR:wght@100..900&family=Rubik+Mono+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dokdo&family=Doto:wght@100..900&family=Noto+Sans+KR:wght@100..900&family=Rubik+Mono+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dokdo&family=Doto:wght@100..900&family=Noto+Sans+KR:wght@100..900&family=Rubik+Mono+One&family=Song+Myung&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Rubik+Mono+One&display=swap');
+@font-face {font-family: 'TTLaundryGothicB'; src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/TTLaundryGothicB.woff2') format('woff2');font-weight: 700;font-style: normal;}
+
+
+*{margin: 0; padding: 0; box-sizing: border-box;}
+body{
+    max-width: 100%;
+    min-height: 100vh;
+    display: flex;
+    background: #646464;
+    overflow: hidden;
+    flex-direction: row;
+}
+
+button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 22px;
+    transition: 0.1s linear;
+}
+span{
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px;
+    border: 1px solid #000;
+    margin: 12px;
+}
+.box1{
+    position: relative;
+    border-radius: 30px; /* ✅ 둥근 모서리 적용 */
+    border: 1px solid transparent; /* ✅ 투명한 테두리 */
+    background: linear-gradient(#646464,#646464) padding-box, /* ✅ 내부 배경 */
+                linear-gradient(-45deg, rgba(255, 159, 243, 1), rgba(0, 119, 255, 1), rgba(244, 255, 255, 1), rgba(255, 159, 243, 1), rgba(51, 204, 255, 1)) border-box;
+    margin: 5px;
+    transition: 0.3s linear;
+    display: flex;
+    flex-direction: column;
+    width: 16%;
+    height: 96vh;
+    margin-top: 2vh;
+}
+.iconbox{
+    position: relative;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30px;
+}
+.iconbox img{
+    position: relative;
+    border: 1px solid #fff;
+    width: 60%;
+    height: 90%;
+    border-radius: 100%;
+}
+.box1 .infobox{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Doto", sans-serif;
+    color: #fff;
+}
+.box1 .infobox h1{
+    width: 100%;
+    text-align: center;
+}
+
+.infobox h3 span{
+    border: none;
+    margin: 5px;
+}
+.infobox h3{
+    width: 90%;
+    margin-left: 10px;
+    font-size: 15px;
+    font-weight: 900;
+}
+.infobox h3 .p{
+    text-align: left;
+}
+.box1 h1{
+    top: 150px;
+    font-family: "Doto", sans-serif;
+    text-align: center;
+    color: #fff;
+}
+.box1 p:nth-of-type(1){
+    margin: 0px 10px;
+    text-align: center;
+    font-family: "Doto", sans-serif;
+    overflow: hidden;
+    color: #fff !important;
+    margin-bottom: 50px;
+}
+.ContactMe{
+    position: absolute;
+    bottom: 10%;
+}
+
+
+.box2{
+    border-radius: 30px;
+    background: linear-gradient(-45deg, rgba(255, 159, 243, 0.7), rgba(0,119,255 ,0.7) ,rgba(244,255,255,0.7),rgba(255,159,243,0.7),rgba(51,204,255,0.7));
+    margin: 5px;
+    transition: 0.3s linear;
+    position: relative;
+    width: 70%;
+    height: 96vh;
+    margin-top: 2vh;
+    z-index: 99;
+    overflow: hidden;
+}
+/* .box2:hover{
+    width: 75%;
+} */
+
+.box2 .mainboard{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: 2% 20%;
+    width: 60%;
+    height: 50px;
+    border: 2px solid #000;
+    border-radius: 20px;
+    inset: 0;
+    z-index: 1;
+}
+
+.project{
+    padding: 10px;
+    font-size: 14px;
+    transition: 0.1s linear;
+}
+.project a{
+    text-decoration: none;
+}
+.home{
+    list-style: none;
+    /*transform: translate(-50% , 0%);*/
+    font-size: 0;
+    border-radius: 30px;
+}
+.home button{
+    font-size: 14px;
+    width: 85px;
+    height: 60px;
+    border-radius: 15px;
+    /*background-color: rgba(160, 127, 253, 1);*/
+    transition: 0.1s linear;
+}
+.home button p{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    border-radius: 100%;
+    width: 65px;
+    height: 65px;
+    font-family: "Doto", sans-serif;
+    font-weight: bold;
+    border: 2px solid #000;
+}
+.home button p:hover{
+    text-shadow:  0px 0px 5px rgba(8, 254 , 254, 1) , 0px 0px 10px rgba(8, 254 , 254, 1) , 0px 0px 15px rgba(8, 254 , 254, 1) , 0px 0px 20px rgba(8, 254 , 254, 1);
+}
+.home button:hover{
+    transform: scale(1.05);
+    transition: 0.1s linear;
+}
+.skill{
+    font-size: 18px;
+    padding: 10px;
+}
+.skill a{
+    text-decoration: none;
+}
+.skill a button{
+    font-family: "Doto", sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+}
+.homepage{
+    list-style: none;
+    position: relative;
+    height: 70%;
+}
+.homepagemobile{
+    display: none;
+}
+.projectpage{
+    display: none;
+    list-style: none;
+    position: relative;
+    background: transparent;
+}
+.project a button{
+    font-family: "Doto", sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+}
+.skillpage{
+    list-style: none;
+    display: none;
+}
+.frame{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 90%;
+    border: 5px solid #eee;
+    border-radius: 10px;
+    background: black;
+    opacity: 1;
+    transition: 1s;
+    overflow: hidden;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 
+    0 10px 20px rgba(0, 0, 0, 0.7); /* 입체감 */
+}
+
+.frame.active {
+    box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.2);
+    border: 3px ridge #fff;
+    opacity: 1;
+    transition: 1s;
+}
+
+.swiper {
+    display: none;
+    opacity: 0;
+}
+
+.frame.active .swiper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+}
+
+.swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.frame.active .swiper img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.close_swiper {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 40px; /* 크기 키움 */
+    height: 40px;
+    color: #fff;
+    border: none;
+    font-size: 18px; /* 글자 크기 키움 */
+    font-weight: bold;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+}
+
+/* X 버튼 내부 텍스트 */
+.close_swiper::before {
+    content: "X";
+    display: block;
+}
+.clickme{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.clickme h4{
+    font-size: 12px;
+    color: lime;
+}
+.clickme.content{
+    visibility: hidden;
+    content: '';
+    position: absolute;
+    background: url(img/23330.jpg);
+    width: 100%;
+    height: 100%;
+}
+.clickme img{
+    width: 30px;
+    height: 30px;
+    background: #000;
+    border-radius: 100%;
+}
+.textarea{
+    border: none;
+    position: relative;
+    top: 100%;
+    left: 35%;
+    display: block;
+    width:  60%;
+    font-size: 18px;
+    text-align: right;
+    color: transparent;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #111;
+    padding: 10px;
+    transition: 0.3s linear;
+}
+.textarea:hover{
+    color: #fff;
+    transition: 0.3s linear;
+}
+.textarea .text1{
+    position: relative;
+    font-size: 34px;
+    /* font-family: "Song Myung", serif; */
+}
+.textarea .text2{
+    position: relative;
+    text-align: right;
+    font-family: "Doto", sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+}
+.board{
+    position: absolute;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    max-height: 95vh;
+    margin: 0% 5%;
+    padding: 20px;
+    z-index: 1;
+    overflow: scroll;
+    scrollbar-color: pink;
+    opacity: 0;
+    transition: opacity 0.5s ease , transform 0.5s ease;
+    overflow-y: auto;
+}
+
+.board::-webkit-scrollbar{
+    width: 10px;
+    height: 10px;
+}
+
+.board::-webkit-scrollbar-button {
+    display: none;
+}
+
+.board::-webkit-scrollbar-thumb{
+    background-color: purple;
+    border-radius: 10px;
+    border: 1px solid #000;
+}
+.board::-webkit-scrollbar-track{
+    background-color: rgba(255, 159, 243, 0.5);
+}
+.board.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.board .site{
+    /* display: flex; */
+    flex-direction: row;
+    position: relative;
+    list-style: none;
+    border-radius: 10px;
+    /* background: #A07855; */
+    margin-bottom: 20px;
+    transition: box-shadow 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 1);
+}
+.board .site:hover{
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 1);
+    transition: box-shadow 0.2s ease;
+}
+.board a{
+    position: relative;
+    width: 50%;
+}
+.board img{
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    object-fit: cover;
+    padding: 10px;
+    height: 390px;
+    border-radius: 30px;
+    transition: transform .5s ease;
+}
+.board .site:nth-child(3) img{
+    background-position: top;
+    width: 100%;
+}
+.board .site:nth-child(4) img{
+    background-position: top;
+    width: 100%;
+}
+.board .site:last-child{
+    margin-bottom: 10px;
+}
+
+.board .site img:hover{
+    transform: scale(1.02);
+    transition: transform .5s ease;
+    border-radius: 30px;
+}
+.board .site .info{
+    border: none;
+    padding: 20px;
+    line-height: 50px;
+    font-size: 18px;
+    color: #000;
+    font-weight: bold;
+    font-family:  "Noto Sans KR", sans-serif;
+    /* background: #A07855; */
+}
+
+.skillpage{
+    display: none;
+    overflow: hidden;
+    width: 90%;
+    height: 85vh;
+    margin: 5%;
+    padding: 10px;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+.skills{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.development{
+    width: 100%;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    border: 1px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+.development:hover{
+    transition: box-shadow 0.2s ease;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 1);
+}
+.development h1{
+    padding: 0 30px;
+    font-family: "Song Myung", serif;
+    color: #000;
+}
+.development ul{
+    display: flex;
+    flex-direction: row;
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+}
+.development:nth-child(3) img{
+    width: 150px;
+    height: 80px;
+}
+.development:nth-child(3)span{
+    margin-top: 30px;
+}
+.development li{
+    list-style: none;
+}
+.development ul li img{
+    width: 50px;
+    height: 50px;
+}
+.development:nth-child(3) ul li img{
+    width: 150px;
+    height: 50px;
+}
+.development span{
+    position: relative;
+    left: 0;
+    border: none;
+    margin: 10px;
+    /* width: 100%; */
+    height: 100%;
+    text-align: left;
+    padding: 10px;
+    color: #000;
+    font-size: 14px;
+    line-height: 25px;
+    letter-spacing: -.5px;
+    font-weight: bold;
+}
+
+
+
+.box3{
+    position: relative;
+    width: 70px;
+    height: 96vh;
+    top: 1vh;
+    border-radius: 30px; /* ✅ 둥근 모서리 적용 */
+    border: 1px solid transparent; /* ✅ 투명한 테두리 */
+    background: linear-gradient(#646464,#646464) padding-box, /* ✅ 내부 배경 */
+                linear-gradient(-45deg, rgba(255, 159, 243, 1), rgba(0, 119, 255, 1), rgba(244, 255, 255, 1), rgba(255, 159, 243, 1), rgba(51, 204, 255, 1)) border-box;
+    margin: 10px;
+    overflow: hidden;
+}
+.clock{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    border-radius: 30px;
+    color: #fff;
+    height: 70px;
+    font-size: 28px;
+    animation: Time 10s linear infinite;
+    word-break: keep-all;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+@keyframes Time {
+    0%{
+        transform: translatey(-10vh) rotate(90deg);
+    }
+    100%{
+        transform: translatey(105vh) rotate(90deg);
+    }
+}
+
+
+.container {
+    width: 15%;
+    height: 96vh;
+    margin-top: 2vh;
+    border-radius: 30px; /* ✅ 둥근 모서리 적용 */
+    border: 1px solid transparent; /* ✅ 투명한 테두리 */
+    background: linear-gradient(#646464,#646464) padding-box, /* ✅ 내부 배경 */
+                linear-gradient(-45deg, rgba(255, 159, 243, 1), rgba(0, 119, 255, 1), rgba(244, 255, 255, 1), rgba(255, 159, 243, 1), rgba(51, 204, 255, 1)) border-box;
+    transition: all 0.3s linear;
+    overflow: hidden;
+}
+.container.hover{
+    width: 5%;
+    transform-origin: 100% 100%;
+}
+.container .h1{
+    position: relative;
+    display: flex;
+    left: 50%;
+    transform: translate(-50% , 3px);
+    font-size: 24px;
+    padding-top: 5px;
+    text-align: center;
+    font-family:"Doto", sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+    width: max-content;
+    color: transparent;
+    /* background-color: #2754B3; */
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #fff;
+    border-radius: 3px;
+}
+.hidebtn{
+    position: fixed;
+    bottom: 14px;
+    right:  5px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    transition: 0.3s linear;
+    color: #fff;
+}
+.hidebtn.hide{
+    position: fixed;
+    bottom: 14px;
+    right:  5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    border: none;
+    transition: 0.3s linear;
+}
+.hidebtn i::after{
+    content: "";
+    position: absolute;
+    background: url(img/icons8-right-arrow-30.png) center / cover no-repeat;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    border: 1px solid #fff;
+}
+
+.hidebtn.hide i::after{
+    content: "";
+    position: absolute;
+    background: url(img/icons8-left-30.png) center / cover no-repeat;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #fff;
+    border-radius: 100%;
+}
+.box4.active , .box5.active , .h1.active{
+    visibility: hidden;
+    transition:  0.3s linear;
+}
+.h1.active{
+    font-size: 12px;
+    transition: 0.3s linear;
+}
+.box4{
+    margin: 5px;
+    transition: 0.3s linear;
+    position: relative;
+    margin-bottom: 1vh;
+    border: none;
+}
+.SNS{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    height: auto;
+    margin-top: 10px;
+}
+.SNS a{
+    display: flex;
+}
+.SNS a:nth-of-type(1)::before{
+    content: "";
+    background: url(img/icons8-kakao-talk-100.png) center /cover no-repeat;
+    width: 80px;
+    height: 80px;
+    margin: 10px 0px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+.SNS a:nth-of-type(2)::before{
+    content: "";
+    background: url(img/icons8-instagram-100.png) center / cover no-repeat;
+    width: 80px;
+    height: 80px;
+    margin: 10px 0px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+.SNS a:nth-of-type(3)::before{
+    content: "";
+    background: url(img/icons8-email-100.png) center / cover no-repeat;
+    width: 80px;
+    height: 80px;
+    margin: 10px 0px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+.SNS .SNSTX{
+    font-family: "Doto", sans-serif;
+    color: #fff;
+    font-weight:900;
+    font-size: 28px;
+}
+
+
+.box5{
+    border-radius: 30px;
+    /* border: 3px solid rgba(0, 0 , 0, 1); */
+    margin: 5px;
+    transition: 0.3s linear;
+    height: 47vh;
+    position: relative;
+}
+.box5 iframe{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+}
+
+.footer{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 15px;
+    color: #fff;
+}
