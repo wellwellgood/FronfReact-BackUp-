@@ -18,9 +18,9 @@ function LoginPage() {
 
   useEffect(() => {
     console.log("✅ sessionStorage userId:", sessionStorage.getItem("userId"));
-    // const handleBeforeUnload = () => {
-      // sessionStorage.clear();
-    // };
+     const handleBeforeUnload = () => {
+       sessionStorage.clear();
+     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
