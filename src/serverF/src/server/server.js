@@ -25,7 +25,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(require('cors')());
+//app.use(require('cors')());
 
 // ✅ API 라우팅
 app.get('/api/messages', async (req, res) => {
