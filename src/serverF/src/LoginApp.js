@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./LoginApp.module.css"; // 모듈 CSS import
+import styles from "./LoginApp.module.css";
 import axios from "axios";
 
-// ✅ 로그인 페이지
 function LoginPage() {
   const navigate = useNavigate();
   const [ID, setId] = useState("");
@@ -18,9 +17,9 @@ function LoginPage() {
 
   useEffect(() => {
     console.log("✅ sessionStorage userId:", sessionStorage.getItem("userId"));
-     const handleBeforeUnload = () => {
-       sessionStorage.clear();
-     };
+    const handleBeforeUnload = () => {
+      sessionStorage.clear();
+    };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
@@ -51,11 +50,16 @@ function LoginPage() {
 
   const loginButton = async () => {
     try {
-      const response = await axios.post("https://react-server-wmqa.onrender.com", data, {
-        withCredentials: true,
-        username : ID,
-        password : PW,
-      });
+      const response = await axios.post(
+        "https://react-server-wmqa.onrender.com/api/login",
+        {
+          username: ID,
+          password: PW
+        },
+        {
+          withCredentials: true
+        }
+      );
 
       const { token } = response.data;
       sessionStorage.setItem("userToken", token);
