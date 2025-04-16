@@ -51,7 +51,8 @@ function LoginPage() {
 
   const loginButton = async () => {
     try {
-      const response = await axios.post("https://react-server-wmqa.onrender.com", {
+      const response = await axios.post("https://react-server-wmqa.onrender.com", data, {
+        withCredentials: true,
         username : ID,
         password : PW,
       });
