@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 4000;
 
 // ✅ CORS 설정
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://golden-sorbet-e61f3c.netlify.app/",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
