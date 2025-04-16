@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import './LoginApp.module.css'; // 모듈 CSS import
+import styles from './LoginApp.module.css'; // 모듈 CSS import
 
 // ✅ 로그인 페이지
 function LoginPage() {
