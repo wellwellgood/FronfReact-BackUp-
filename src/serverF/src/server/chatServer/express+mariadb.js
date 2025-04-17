@@ -1,5 +1,14 @@
 require('dotenv').config(); // 꼭 맨 위에 추가
 
+console.log("✅ ENV 확인:", {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+});
+
+
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
