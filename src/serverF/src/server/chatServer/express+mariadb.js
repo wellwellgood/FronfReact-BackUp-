@@ -1,37 +1,44 @@
-require('dotenv').config(); // 꼭 맨 위에 추가
-
-console.log("✅ ENV 확인:", {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-});
-
+require('dotenv').config();
 
 const mysql = require('mysql2/promise');
 
+// Add connection retry logic
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '3306', 10),
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306,
-  connectionLimit: 20,
+  connectionLimit: 10,
+  connectTimeout: 20000, // Increased timeout
+  waitForConnections: true,
+  queueLimit: 0
 });
 
-module.exports = pool;
-
+// Add better error handling and logging
 (async () => {
   let conn;
-  try {
-    conn = await pool.getConnection();
-    console.log("✅ DB 연결 성공");
-    const [rows] = await conn.query("SELECT DATABASE() AS db");
-    console.log("📌 현재 DB:", rows[0].db);
-  } catch (err) {
-    console.error("❌ DB 연결 실패:", err);
-  } finally {
-    if (conn) conn.release();
+  let retries = 5;
+  
+  while (retries > 0) {
+    try {
+      conn = await pool.getConnection();
+      console.log("✅ DB 연결 성공");
+      const [rows] = await conn.query("SELECT DATABASE() AS db");
+      console.log("📌 현재 DB:", rows[0].db);
+      break; // Connection successful, exit the loop
+    } catch (err) {
+      retries--;
+      console.error(`❌ DB 연결 실패 (남은 시도: ${retries}):`, err);
+      
+      if (retries > 0) {
+        console.log("🔄 5초 후 재시도...");
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    } finally {
+      if (conn) conn.release();
+    }
   }
 })();
+
+module.exports = pool;
