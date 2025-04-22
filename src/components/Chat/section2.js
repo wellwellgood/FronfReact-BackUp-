@@ -12,8 +12,10 @@ const Section2 = ({ username, name }) => {
   const [input, setInput] = useState("");
   const chatBoxRef = useRef(null);
 
+  const API = process.env.REACT_APP_API || "http://localhost:4000";
+
   useEffect(() => {
-    const newSocket = io("http://localhost:4000");
+    const newSocket = io("${API}");
     setSocket(newSocket);
 
     newSocket.on("message", (msg) => {
