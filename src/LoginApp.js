@@ -16,11 +16,13 @@ function LoginPage() {
   const goToPassword = () => navigate("/password");
   const goToMembership = () => navigate("/membership");
 
+  const API = process.env.REACT_APP_API || "http://localhost:4000";
+
   useEffect(() => {
     console.log("✅ sessionStorage userId:", sessionStorage.getItem("userId"));
-    // const handleBeforeUnload = () => {
-      // sessionStorage.clear();
-    // };
+    const handleBeforeUnload = () => {
+      sessionStorage.clear();
+    };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
@@ -51,7 +53,7 @@ function LoginPage() {
 
   const loginButton = async () => {
     try {
-      const response = await axios.post("http://localhost:4000/api/login", {
+      const response = await axios.post("${API}/api/login", {
         username : ID,
         password : PW,
       });
