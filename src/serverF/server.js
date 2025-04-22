@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ✅ 정확한 origin만 허용
-const allowList = ['https://golden-sorbet-e61f3c.netlify.app'];
+const allowList = ['https://myappboard.netlify.app/'];
 const corsOptions = {
   origin: function (origin, callback) {
     console.log('CORS 요청 origin 👉', origin);

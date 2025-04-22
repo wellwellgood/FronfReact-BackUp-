@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import LoginPage from './serverF/src/LoginApp.js';
+import LoginPage from './LoginApp.js';
 import Main from './main';
 // import Example from './components/section1/section1';
 import ChatApp from './components/Chat/section2.js';
