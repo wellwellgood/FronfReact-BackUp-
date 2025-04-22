@@ -1,25 +1,15 @@
 {
-  "devDependencies": {
-    "eslint": "^8.57.1"
-  },
+  "name": "backend-server",
+  "version": "1.0.0",
+  "main": "server.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "server": "node server.js",
-    "deploy": "npm run build && npm run server",
-    "test": "react-scripts test"
+    "start": "node server.js"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "express-mysql-session": "^3.0.3",
-    "express-session": "^1.18.1",
-    "jsonwebtoken": "^9.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "mariadb": "^3.4.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.30.0",
-    "socket.io": "^4.8.1",
-    "ws": "^8.18.1"
-  },
-  "proxy" : "http://localhost:4000"
+    "pg": "^8.11.0"
+  }
 }
