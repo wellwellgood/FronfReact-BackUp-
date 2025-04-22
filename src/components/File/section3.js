@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./section3.module.css";
 
+// ✅ 환경에 따라 API 주소 자동 선택
+const API = process.env.REACT_APP_API || "http://localhost:3001";
+
 export default function FileUploadPage() {
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
@@ -29,7 +32,7 @@ export default function FileUploadPage() {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const response = await axios.post("http://localhost:4000/upload", formData, {
+      const response = await axios.post(`${API}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       if (response.data.success) {
@@ -48,7 +51,7 @@ export default function FileUploadPage() {
 
   const fetchFiles = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/files");
+      const response = await axios.get(`${API}/files`);
       if (response.data.success) {
         setUploadedFiles(response.data.files);
       }
@@ -59,7 +62,7 @@ export default function FileUploadPage() {
 
   const handleDownload = async (fileName) => {
     try {
-      const response = await axios.get(`http://localhost:4000/download/${fileName}`, {
+      const response = await axios.get(`${API}/download/${fileName}`, {
         responseType: "blob",
       });
 
@@ -75,6 +78,7 @@ export default function FileUploadPage() {
       alert("다운로드 중 오류 발생");
     }
   };
+
   const handleChange = (e) => setText(e.target.value);
 
   useEffect(() => {
