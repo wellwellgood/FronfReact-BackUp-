@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import styles from "./serverF/chatServer/css/membership.module.css";
 
 export default function Membership() {
   const navigate = useNavigate();
