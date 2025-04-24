@@ -8,6 +8,7 @@ const socket = require("./socket.js"); // socket.js에서 함수 export 필요
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
+const sendCodeRoute = require('./routes/sendCode');
 
 const app = express();
 const server = http.createServer(app);
@@ -22,6 +23,8 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/api', sendCodeRoute);
 
 // ✅ 파일 업로드 설정
 const uploadDir = path.join(__dirname, "uploads");

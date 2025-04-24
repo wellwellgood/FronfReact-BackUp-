@@ -50,6 +50,28 @@ export default function Membership() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSendCode = async () => {
+    const { phone1, phone2, phone3 } = formData;
+    const fullPhone = `${phone1}-${phone2}-${phone3}`;
+  
+    if (!phone1 || !phone2 || !phone3) {
+      alert("휴대폰 번호를 모두 입력해주세요.");
+      return;
+    }
+  
+    if (!/^01[0-9]-\d{3,4}-\d{4}$/.test(fullPhone)) {
+      alert("휴대폰 번호 형식이 올바르지 않습니다.");
+      return;
+    }
+  
+    try {
+      await axios.post("http://localhost:4000/api/send-code", { phone1, phone2, phone3 });
+      alert("✅ 인증번호가 발송되었습니다.");
+    } catch (err) {
+      alert("❌ 인증번호 전송에 실패했습니다.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
@@ -160,7 +182,7 @@ export default function Membership() {
 
           {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
-          <button type="submit" className={styles.findBtn}>가입하기</button>
+          <button type="button" onClick={handleSendCode}>인증번호 보내기</button>
         </form>
       </div>
     </div>
