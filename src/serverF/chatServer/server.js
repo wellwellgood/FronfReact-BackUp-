@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 4000;
 
 // ✅ CORS 설정
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://myappboard.netlify.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
@@ -42,7 +42,7 @@ app.get('/api/messages', async (req, res) => {
 app.use("/users", userRoutes);
 
 // ✅ 로그인 API
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   let conn;
   try {
     const { username, password } = req.body;

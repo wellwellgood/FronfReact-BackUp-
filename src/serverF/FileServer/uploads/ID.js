@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import styles from "../src/test/src/css/ID.module.css";
+import styles from "../../chatServer/css/ID.module.css";
 
 export default function ID() {
   const [username, setUsername] = useState("");

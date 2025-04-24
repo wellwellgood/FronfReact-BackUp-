@@ -1,177 +1,172 @@
 const express = require("express");
-const http = require("http");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const pool = require("../chatServer/express+mariadb.js"); // DB 연결
-const socket = require("./socket.js"); // socket.js에서 함수 export 필요
-const path = require("path");
-const fs = require("fs");
+const dotenv = require("dotenv");
+const { Pool } = require("pg");
 const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
+dotenv.config();
 const app = express();
-const server = http.createServer(app);
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
-// ✅ CORS 설정
-app.use(cors({
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+// PostgreSQL 연결
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  port: 5432,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  ssl: { rejectUnauthorized: false },
+});
+
+// CORS 설정
+const allowList = ["https://myappboard.netlify.app"];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowList.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
-}));
+};
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// ✅ 파일 업로드 설정
-const uploadDir = path.join(__dirname, "uploads");
+// 파일 업로드 설정
+const uploadDir = path.join(__dirname, "upload");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
 const storage = multer.diskStorage({
-  destination: uploadDir,
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
+  destination: (_, __, cb) => cb(null, uploadDir),
+  filename: (_, file, cb) => cb(null, file.originalname),
 });
 const upload = multer({ storage });
 
-// ✅ 파일 업로드 API
-app.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file) return res.status(400).json({ success: false, message: "파일이 업로드되지 않았습니다." });
-  res.status(200).json({ success: true, fileName: req.file.filename });
+/* ✅ 로그인 */
+app.post("/api/login", async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password)
+    return res.status(400).json({ message: "아이디 또는 비밀번호 누락됨" });
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM users WHERE username = $1 AND password = $2",
+      [username, password]
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json({ token: "로그인성공토큰" });
+    } else {
+      res.status(401).json({ message: "아이디 또는 비밀번호 오류" });
+    }
+  } catch (err) {
+    console.error("❌ 로그인 오류:", err);
+    res.status(500).json({ message: "서버 오류" });
+  }
 });
 
+/* ✅ 회원가입 */
+app.post("/api/register", async (req, res) => {
+  const { username, password, name } = req.body;
+  if (!username || !password || !name)
+    return res.status(400).json({ message: "모든 항목 입력 필요" });
+
+  try {
+    const check = await pool.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
+    if (check.rows.length > 0)
+      return res.status(409).json({ message: "이미 존재하는 아이디입니다." });
+
+    await pool.query(
+      "INSERT INTO users (username, password, name) VALUES ($1, $2, $3)",
+      [username, password, name]
+    );
+
+    res.status(201).json({ message: "회원가입 성공" });
+  } catch (err) {
+    console.error("❌ 회원가입 오류:", err);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+/* ✅ 파일 업로드 */
+app.post("/upload", upload.single("file"), (req, res) => {
+  if (!req.file)
+    return res.status(400).json({ success: false, message: "파일 누락" });
+  res.status(200).json({ success: true, filename: req.file.originalname });
+});
+
+/* ✅ 파일 목록 조회 */
 app.get("/files", (req, res) => {
   try {
     const files = fs.readdirSync(uploadDir);
     res.status(200).json({ success: true, files });
-  } catch (error) {
+  } catch (err) {
+    console.error("❌ 파일 목록 오류:", err);
     res.status(500).json({ success: false, message: "파일 목록 오류" });
   }
 });
 
+/* ✅ 파일 다운로드 */
 app.get("/download/:filename", (req, res) => {
-  const filePath = path.join(uploadDir, req.params.filename);
-  if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, message: "파일 없음" });
-  res.download(filePath);
-});
-
-// ✅ 로그인 API
-app.post('/api/login', async (req, res) => {
-  let conn;
-  try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ message: "아이디와 비밀번호를 입력해주세요." });
-    }
-
-    conn = await pool.getConnection();
-    const [rows] = await conn.query("SELECT * FROM users WHERE username = ?", [username]);
-
-    if (!rows || rows.length === 0) {
-      return res.status(401).json({ message: "아이디가 존재하지 않습니다." });
-    }
-
-    const user = rows[0];
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(401).json({ message: "비밀번호가 일치하지 않습니다." });
-    }
-
-    const token = jwt.sign({ id: user.id, username: user.username }, "your_secret_key", { expiresIn: "1h" });
-
-    res.status(200).json({ message: "로그인 성공", token });
-  } catch (err) {
-    console.error("❌ 로그인 오류:", err);
-    res.status(500).json({ message: "서버 오류 발생", error: err.message });
-  } finally {
-    if (conn) conn.release();
+  const filepath = path.join(uploadDir, req.params.filename);
+  if (fs.existsSync(filepath)) {
+    res.download(filepath);
+  } else {
+    res.status(404).json({ success: false, message: "파일 없음" });
   }
 });
 
-// ✅ 회원가입 API
-app.post("/api/register", async (req, res) => {
-  const { username, name, password, confirmPassword, phone1, phone2, phone3 } = req.body;
-
-  if (!username || !name || !password || !confirmPassword || !phone1 || !phone2 || !phone3) {
-    return res.status(400).json({ message: "모든 필드를 입력해주세요." });
-  }
-
-  if (password !== confirmPassword) {
-    return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
-  }
-
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const [existing] = await conn.query("SELECT * FROM users WHERE username = ?", [username]);
-    if (existing.length > 0) {
-      return res.status(409).json({ message: "이미 존재하는 아이디입니다." });
-    }
-
-    const hashed = await bcrypt.hash(password, 10);
-    await conn.query(
-      "INSERT INTO users (username, name, password, phone1, phone2, phone3) VALUES (?, ?, ?, ?, ?, ?)",
-      [username, name, hashed, phone1, phone2, phone3]
-    );
-    res.status(201).json({ message: "회원가입 성공" });
-  } catch (err) {
-    console.error("❌ 회원가입 오류:", err);
-    res.status(500).json({ message: "서버 오류 발생" });
-  } finally {
-    if (conn) conn.release();
-  }
-});
-
-// ✅ 메시지 저장
+/* ✅ 메시지 저장 */
 app.post("/api/messages", async (req, res) => {
-  const { sender_id, receiver_id, content } = req.body;
-  let conn;
+  const { sender_username, receiver_username, content, time } = req.body;
+
+  if (!sender_username || !receiver_username || !content || !time)
+    return res.status(400).json({ message: "모든 필드가 필요합니다." });
+
   try {
-    conn = await pool.getConnection();
-    await conn.query(
-      "INSERT INTO messages (sender_id, receiver_id, content, time) VALUES (?, ?, ?, NOW())",
-      [sender_id, receiver_id, content]
+    await pool.query(
+      "INSERT INTO messages (sender_username, receiver_username, content, time) VALUES ($1, $2, $3, $4)",
+      [sender_username, receiver_username, content, time]
     );
     res.status(201).json({ message: "메시지 저장 완료" });
   } catch (err) {
     console.error("❌ 메시지 저장 오류:", err);
     res.status(500).json({ message: "서버 오류" });
-  } finally {
-    if (conn) conn.release();
   }
 });
 
-// ✅ 메시지 불러오기
+/* ✅ 메시지 조회 (옵션: 전체 or 특정 유저끼리) */
 app.get("/api/messages", async (req, res) => {
-  let conn;
+  const { sender, receiver } = req.query;
+
+  let query = "SELECT * FROM messages";
+  const values = [];
+
+  if (sender && receiver) {
+    query += " WHERE sender_username = $1 AND receiver_username = $2";
+    values.push(sender, receiver);
+  }
+
   try {
-    conn = await pool.getConnection();
-    const [messages] = await conn.query(`
-      SELECT m.*, s.username AS sender_name, r.username AS receiver_name
-      FROM messages m
-      LEFT JOIN users s ON m.sender_id = s.id
-      LEFT JOIN users r ON m.receiver_id = r.id
-      ORDER BY m.time ASC
-    `);
-    res.status(200).json(messages);
+    const result = await pool.query(query, values);
+    res.json(result.rows);
   } catch (err) {
-    console.error("❌ 메시지 불러오기 오류:", err);
+    console.error("❌ 메시지 조회 오류:", err);
     res.status(500).json({ message: "서버 오류" });
-  } finally {
-    if (conn) conn.release();
   }
 });
 
-// ✅ 상태 확인
-app.get("/", (req, res) => {
-  res.send("서버 정상 작동 중입니다.");
+/* ✅ 서버 상태 확인 */
+app.get("/test", (req, res) => {
+  res.json({ message: "✅ 서버 작동 중" });
 });
 
-// ✅ 소켓 서버 실행
-socket(server);
-
-// ✅ 서버 시작
-server.listen(PORT, () => {
-  console.log(`🚀 통합 서버 실행 중: http://localhost:${PORT}`);
+/* ✅ 서버 시작 */
+app.listen(PORT, () => {
+  console.log(`✅ 서버가 포트 ${PORT}에서 실행 중`);
 });
