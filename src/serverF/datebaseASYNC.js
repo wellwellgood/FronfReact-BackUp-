@@ -6,7 +6,7 @@ const { Pool } = require('pg');
 // ✅ MariaDB 연결
 const mariaPool = mariadb.createPool({
     host: process.env.MARIADB_HOST,
-    port: Number(process.env.MARIADB_PORT), // ✅ 반드시 숫자로 변환!
+    port:5432, // ✅ 반드시 숫자로 변환!
     user: process.env.MARIADB_USER,
     password: process.env.MARIADB_PASSWORD,
     database: process.env.MARIADB_NAME,

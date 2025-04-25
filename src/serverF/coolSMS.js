@@ -9,29 +9,40 @@ function generateCode() {
 }
 
 router.post('/send-code', async (req, res) => {
-  const { phone1, phone2, phone3 } = req.body;
-  const phone = `${phone1}${phone2}${phone3}`;
-
-  if (!/^01[0-9]{8,9}$/.test(phone)) {
-    return res.status(400).json({ message: "휴대폰 번호 형식이 올바르지 않습니다." });
-  }
-
-  const code = generateCode();
+  console.log("✅ /send-code 요청 받음");  // 가장 중요!
 
   try {
-    await messageService.sendOne({
+    console.log("🧪 req.body:", req.body); 
+    const { phone1, phone2, phone3 } = req.body;
+    console.log("📲 받은 번호:", phone1, phone2, phone3);
+
+    const phone = `${phone1}${phone2}${phone3}`;
+    const code = generateCode();
+
+    console.log("📤 전송할 전체 번호:", phone);
+    console.log("🧾 인증번호:", code);
+
+    const response = await messageService.sendOne({
       to: phone,
-      from: '010-4913-1389', // 쿨SMS에 등록한 발신번호
-      text: `[인증번호] ${code} (본인확인용)`
+      from: '01049131389', // - 빼고
+      text: `[인증번호] ${code}`,
     });
 
-    // 추후: 인증번호 DB 또는 메모리에 저장 (ex: Redis)
-    console.log(`[인증번호 전송 완료] ${phone} → ${code}`);
+    console.log("✅ 문자 전송 성공:", response);
 
-    res.json({ success: true });
+    res.status(200).json({ success: true, code });
+
   } catch (error) {
-    console.error("문자 전송 실패:", error);
-    res.status(500).json({ message: "문자 전송에 실패했습니다." });
+    console.error("❌ 문자 전송 실패!", error.message);
+    if (error.response) {
+      console.error("📦 API 응답:", error.response.data);
+    } else if (error.request) {
+      console.error("📡 요청은 갔지만 응답 없음:", error.request);
+    } else {
+      console.error("⚠️ 기타 오류:", error);
+    }
+  
+    res.status(500).json({ message: "문자 전송 실패", error: error.message });
   }
 });
 

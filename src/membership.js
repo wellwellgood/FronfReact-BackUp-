@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./membership.module.css";
 
+
 export default function Membership() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -13,9 +14,13 @@ export default function Membership() {
     phone1: "",
     phone2: "",
     phone3: "",
+    verifyCode: "",
   });
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [sentCode, setSentCode] = useState(""); // 서버에서 발급된 인증번호
+  const [isVerified, setIsVerified] = useState(false); // 인증 완료 여부
 
   const validateForm = () => {
     const newErrors = {};
@@ -66,10 +71,25 @@ export default function Membership() {
     }
   
     try {
-      await axios.post("http://localhost:4000/api/send-code", { phone1, phone2, phone3 });
+      const response = await axios.post("/api/send-code", { phone1, phone2, phone3 });
       alert("✅ 인증번호가 발송되었습니다.");
+      setSentCode(response.data.code);
     } catch (err) {
       alert("❌ 인증번호 전송에 실패했습니다.");
+    }
+  };
+
+  const handleVerifyCode = () => {
+    if (!sentCode) {
+      alert("❌ 인증번호가 전송되지 않았습니다.");
+      return;
+    }
+
+    if (formData.verifyCode === sentCode) {
+      alert("✅ 인증되었습니다.");
+      setIsVerified(true);
+    } else {
+      alert("❌ 인증번호가 일치하지 않습니다.");
     }
   };
 
@@ -86,7 +106,7 @@ export default function Membership() {
           phone2: formData.phone2,
           phone3: formData.phone3,
         };
-        await axios.post("http://localhost:4000/api/register", userData);
+        await axios.post("/api/register", userData);
         alert("✅ 회원가입이 완료되었습니다!");
         navigate("/");
       } catch (err) {
@@ -140,12 +160,12 @@ export default function Membership() {
           <input
             className={styles.verifyCode}
             name="password"
-            type="password"
+            //type="password"
             value={formData.password}
             onChange={handleChange}
             placeholder="비밀번호"
           />
-          <h9 styles="color: red;">비밀번호는 대소문자 및 특수문자 포함, 8자이상 입니다.</h9>
+          <h9>비밀번호는 대소문자 및 특수문자 포함, 8자이상 입니다.</h9>
           {errors.password && <p className={styles.error}>{errors.password}</p>}
 
           <input
@@ -183,7 +203,18 @@ export default function Membership() {
 
           {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
-          <button type="button" onClick={handleSendCode}>인증번호 보내기</button>
+          <button type="button" onClick={handleSendCode} className={styles.verifysend}>인증번호 보내기</button>
+
+          <input
+            className={styles.verifyInput}
+            name="verifyCode"
+            placeholder="인증번호 입력"
+            value={formData.verifyCode}
+            onChange={handleChange}
+          />
+          <button type="button" onClick={handleVerifyCode} className={styles.verifycheck}>인증번호 확인</button>
+
+          <button type="submit" className={styles.submitBtn}>회원가입</button>
         </form>
       </div>
     </div>

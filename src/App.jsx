@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 import LoginPage from './LoginApp.js';
 import Main from './main';
@@ -15,7 +15,7 @@ import LinkPage from './membership.js';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/main" element={<Main />} />
@@ -28,7 +28,7 @@ function App() {
         <Route path="/Id" element={<Id />} />
         <Route path="/password" element={<Password />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
