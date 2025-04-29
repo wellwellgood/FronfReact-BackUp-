@@ -52,7 +52,7 @@ function LoginPage() {
   const loginButton = async () => {
     try {
       const response = await api.post(
-        "/api/login",
+        "/api/auth/login",
         {
           username: ID,
           password: PW

@@ -4,7 +4,7 @@ import axios from "axios";
 import styles from "./section3.module.css";
 
 // ✅ 환경에 따라 API 주소 자동 선택
-const API = process.env.REACT_APP_API || "http://localhost:3001";
+const API = process.env.REACT_APP_API || "http://localhost:4000";
 
 export default function FileUploadPage() {
   const [text, setText] = useState("");
@@ -19,8 +19,8 @@ export default function FileUploadPage() {
   const gotoLink3 = () => navigate("/sendEmail");
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("userId");
     alert("로그아웃 되었습니다.");
     navigate("/");
   };
@@ -32,7 +32,7 @@ export default function FileUploadPage() {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const response = await axios.post(`${API}/upload`, formData, {
+      const response = await axios.post(`${API}/api/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       if (response.data.success) {
@@ -49,9 +49,10 @@ export default function FileUploadPage() {
     }
   };
 
+
   const fetchFiles = async () => {
     try {
-      const response = await axios.get(`${API}/files`);
+      const response = await axios.get(`${API}/api/upload`);
       if (response.data.success) {
         setUploadedFiles(response.data.files);
       }
@@ -60,16 +61,16 @@ export default function FileUploadPage() {
     }
   };
 
-  const handleDownload = async (fileName) => {
+  const handleDownload = async (file) => {
     try {
-      const response = await axios.get(`${API}/download/${fileName}`, {
+      const response = await axios.get(`${API}/api/upload/download/${file.type}/${file.name}`, {
         responseType: "blob",
       });
-
+  
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", fileName);
+      link.setAttribute("download", file.name);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -129,10 +130,18 @@ export default function FileUploadPage() {
           {uploadedFiles.length === 0 ? (
             <p>업로드된 파일이 없습니다.</p>
           ) : (
-            uploadedFiles.map((fileName, index) => (
+            uploadedFiles.map((file, index) => (
               <div key={index} className={styles.fileItem}>
-                <span>{fileName}</span>
-                <button onClick={() => handleDownload(fileName)}>다운로드</button>
+                {file.type === "images" ? (
+                  <img
+                    src={`${API}/uploads/images/${file.name}`}
+                    alt={file.name}
+                    className={styles.previewImage}
+                  />
+                ) : (
+                  <span>{file.name}</span>
+                )}
+                <button onClick={() => handleDownload(file)}>다운로드</button>
               </div>
             ))
           )}

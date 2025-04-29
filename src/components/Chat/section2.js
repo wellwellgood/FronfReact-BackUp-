@@ -26,10 +26,11 @@ const Section2 = ({ username, name }) => {
   }, []);
 
   useEffect(() => {
-    axios.get("/api/users").then((res) => {
-      setUsers(res.data.filter((u) => u.username !== username));
+    axios.get("${API}/api/users").then((res) => {
+      const userList = Array.isArray(res.data) ? res.data : [];
+      setUsers(userList.filter((u) => u.username !== username));
     });
-    axios.get("/api/messages").then((res) => {
+    axios.get("${API}/api/messages").then((res) => {
       setMessages(res.data);
     });
   }, [username]);
@@ -49,7 +50,7 @@ const Section2 = ({ username, name }) => {
     };
 
     try {
-      await axios.post("/api/messages", msg);
+      await axios.post("${API}/api/messages", msg);
       socket.emit("message", msg);
       setMessages((prev) => [...prev, { ...msg, time: new Date().toISOString() }]);
       setInput("");

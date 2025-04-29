@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./membership.module.css";
 
-
-export default function Membership() {
-  const navigate = useNavigate();
+const Membership = () => {
   const [formData, setFormData] = useState({
     username: "",
     name: "",
@@ -14,42 +11,11 @@ export default function Membership() {
     phone1: "",
     phone2: "",
     phone3: "",
-    verifyCode: "",
   });
-  const [errors, setErrors] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const [sentCode, setSentCode] = useState(""); // 서버에서 발급된 인증번호
-  const [isVerified, setIsVerified] = useState(false); // 인증 완료 여부
-
-  const validateForm = () => {
-    const newErrors = {};
-    const { username, name, password, confirmPassword, phone1, phone2, phone3 } = formData;
-    const fullPhone = `${phone1}-${phone2}-${phone3}`;
-
-    if (!username.trim()) newErrors.username = "아이디를 입력해주세요.";
-    else if (!/^[a-zA-Z0-9]{5,15}$/.test(username))
-      newErrors.username = "아이디는 5~15자의 영문자 또는 숫자만 가능합니다.";
-
-    if (!name.trim()) newErrors.name = "이름을 입력해주세요.";
-
-    if (!password) newErrors.password = "비밀번호를 입력해주세요.";
-    else if (password.length < 8) newErrors.password = "비밀번호는 최소 8자 이상이어야 합니다.";
-    else if (!/[A-Z]/.test(password)) newErrors.password = "대문자가 포함되어야 합니다.";
-    else if (!/[0-9]/.test(password)) newErrors.password = "숫자가 포함되어야 합니다.";
-    else if (!/[^A-Za-z0-9]/.test(password)) newErrors.password = "특수문자가 포함되어야 합니다.";
-
-    if (password !== confirmPassword) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
-
-    if (!phone1 || !phone2 || !phone3) {
-      newErrors.phone = "휴대폰 번호를 모두 입력해주세요.";
-    } else if (!/^01[0-9]-\d{3,4}-\d{4}$/.test(fullPhone)) {
-      newErrors.phone = "휴대폰 번호 형식이 올바르지 않습니다.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const [verificationCode, setVerificationCode] = useState("");
+  const [sentCode, setSentCode] = useState("");
+  const [verifySuccess, setVerifySuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,164 +25,170 @@ export default function Membership() {
   const handleSendCode = async () => {
     const { phone1, phone2, phone3 } = formData;
     const fullPhone = `${phone1}-${phone2}-${phone3}`;
-  
+
     if (!phone1 || !phone2 || !phone3) {
       alert("휴대폰 번호를 모두 입력해주세요.");
       return;
     }
-  
+
     if (!/^01[0-9]-\d{3,4}-\d{4}$/.test(fullPhone)) {
       alert("휴대폰 번호 형식이 올바르지 않습니다.");
       return;
     }
-  
+
     try {
-      const response = await axios.post("/api/send-code", { phone1, phone2, phone3 });
-      alert("✅ 인증번호가 발송되었습니다.");
-      setSentCode(response.data.code);
-    } catch (err) {
-      alert("❌ 인증번호 전송에 실패했습니다.");
+      const response = await axios.post("/api/send-code", { phoneNumber: fullPhone });
+      if (response.data.success) {
+        setSentCode(response.data.code);
+        alert("✅ 인증번호가 전송되었습니다.");
+      } else {
+        alert("❌ 인증번호 전송 실패");
+      }
+    } catch (error) {
+      console.error("❌ 인증번호 전송 에러:", error);
+      alert("❌ 서버 오류로 인증번호 전송 실패");
     }
   };
 
   const handleVerifyCode = () => {
-    if (!sentCode) {
-      alert("❌ 인증번호가 전송되지 않았습니다.");
-      return;
-    }
-
-    if (formData.verifyCode === sentCode) {
-      alert("✅ 인증되었습니다.");
-      setIsVerified(true);
+    if (verificationCode === sentCode) {
+      setVerifySuccess(true);
+      alert("✅ 인증 성공");
     } else {
+      setVerifySuccess(false);
       alert("❌ 인증번호가 일치하지 않습니다.");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        const userData = {
-          username: formData.username,
-          name: formData.name,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-          phone1: formData.phone1,
-          phone2: formData.phone2,
-          phone3: formData.phone3,
-        };
-        await axios.post("/api/register", userData);
-        alert("✅ 회원가입이 완료되었습니다!");
-        navigate("/");
-      } catch (err) {
-        setErrorMessage(
-          err.response?.data?.message || "회원가입 중 오류가 발생했습니다."
-        );
+
+    if (!verifySuccess) {
+      alert("❌ 인증번호를 먼저 확인해주세요.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("❌ 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/auth/register", formData);
+      if (response.data.message === "회원가입 성공") {
+        alert("🎉 회원가입 완료!");
+        window.location.href = "/";
+      } else {
+        alert(`❌ 회원가입 실패: ${response.data.message}`);
       }
+    } catch (error) {
+      console.error("❌ 회원가입 실패:", error);
+      alert("❌ 서버 오류로 회원가입 실패");
     }
   };
 
-//   const pool = require('../src/test/src/DB');
-
-// app.post('/api/register', async (req, res) => {
-//   const conn = await pool.getConnection();
-//   const { username, name, password, phone1, phone2, phone3 } = req.body;
-//   await conn.query(
-//     'INSERT INTO users (username, name, password, phone1, phone2, phone3) VALUES (?, ?, ?, ?, ?, ?)',
-//     [username, name, password, phone1, phone2, phone3]
-//   );
-//   conn.release();
-//   res.send('회원가입 완료!');
-// });
-
   return (
     <div className={styles.findID}>
-      <Link to="/">
-        <div className={styles.img}></div>
-      </Link>
-      <div className={styles.IDform}>
-        <form className={styles.IDarea} onSubmit={handleSubmit}>
+      <div className={styles.img}></div>
+      <form className={styles.IDform} onSubmit={handleSubmit}>
+        <div className={styles.IDarea}>
           <h1>회원가입</h1>
 
           <input
-            className={styles.name}
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="이름"
-          />
-          {errors.name && <p className={styles.error}>{errors.name}</p>}
-
-          <input
-            className={styles.name}
+            type="text"
             name="username"
             value={formData.username}
             onChange={handleChange}
             placeholder="아이디"
+            className={styles.name}
+            required
           />
-          {errors.username && <p className={styles.error}>{errors.username}</p>}
 
           <input
-            className={styles.verifyCode}
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="이름"
+            className={styles.name}
+            required
+          />
+
+          <input
+            type="password"
             name="password"
-            //type="password"
             value={formData.password}
             onChange={handleChange}
             placeholder="비밀번호"
+            className={styles.name}
+            required
           />
-          <h9>비밀번호는 대소문자 및 특수문자 포함, 8자이상 입니다.</h9>
-          {errors.password && <p className={styles.error}>{errors.password}</p>}
 
           <input
-            className={styles.verifyCode}
-            name="confirmPassword"
             type="password"
+            name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
             placeholder="비밀번호 확인"
+            className={styles.name}
+            required
           />
-          {errors.confirmPassword && <p className={styles.error}>{errors.confirmPassword}</p>}
 
           <div className={styles.phoneGroup}>
-            <select name="phone1" value={formData.phone1} onChange={handleChange}>
-              <option value="">선택</option>
-              <option value="010">010</option>
-              <option value="011">011</option>
-            </select>
+            <input
+              type="text"
+              name="phone1"
+              value={formData.phone1}
+              onChange={handleChange}
+              maxLength="3"
+              placeholder="010"
+              required
+            />
             <span>-</span>
             <input
-              type="tel"
+              type="text"
               name="phone2"
               value={formData.phone2}
               onChange={handleChange}
+              maxLength="4"
+              placeholder="1234"
+              required
             />
             <span>-</span>
             <input
-              type="tel"
+              type="text"
               name="phone3"
               value={formData.phone3}
               onChange={handleChange}
+              maxLength="4"
+              placeholder="5678"
+              required
             />
           </div>
-          {errors.phone && <p className={styles.error}>{errors.phone}</p>}
 
-          {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-
-          <button type="button" onClick={handleSendCode} className={styles.verifysend}>인증번호 보내기</button>
+          <button type="button" className={styles.verifysend} onClick={handleSendCode}>
+            인증번호 전송
+          </button>
 
           <input
-            className={styles.verifyInput}
-            name="verifyCode"
+            type="text"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
             placeholder="인증번호 입력"
-            value={formData.verifyCode}
-            onChange={handleChange}
+            className={styles.verifyInput}
           />
-          <button type="button" onClick={handleVerifyCode} className={styles.verifycheck}>인증번호 확인</button>
 
-          <button type="submit" className={styles.submitBtn}>회원가입</button>
-        </form>
-      </div>
+          <button type="button" className={styles.verifycheck} onClick={handleVerifyCode}>
+            인증번호 확인
+          </button>
+
+          <button type="submit" className={styles.submitBtn}>
+            가입하기
+          </button>
+        </div>
+      </form>
     </div>
   );
-}
+};
+
+export default Membership;
