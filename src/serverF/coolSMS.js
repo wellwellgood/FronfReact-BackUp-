@@ -3,7 +3,7 @@ const router = express.Router();
 const Coolsms = require('coolsms-node-sdk').default;
 
 const apiKey = 'NCSXNORXIJP78SAD';
-const apiSecret = '0FTJII2DY5DHHARFNEBUZM5R2MRKKWS1';
+const apiSecret = 'FTJII2DY5DHHARFNEBUZM5R2MRKKWS1';
 
 const messageService = new Coolsms(apiKey, apiSecret);
 
@@ -16,7 +16,7 @@ function generateCode() {
 router.post('/send-code', async (req, res) => {
   const { phoneNumber } = req.body;  // ✅ 수정: phoneNumber 하나로 받기
 
-  if (!phoneNumber || !/^01[0-9]-\d{3,4}-\d{4}$/.test(phoneNumber)) {
+  if (!phoneNumber || !/^01[0-9]-\d{3,4}-\d{4}$/.test("01049131389")) {
     return res.status(400).json({ message: "휴대폰 번호 형식이 올바르지 않습니다." });
   }
 

@@ -1,10 +1,14 @@
+// ✅ Firebase 연동된 ID.js (아이디 찾기)
 import React, { useState, useEffect } from "react";
+import { auth } from "./firebase";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import axios from "axios";
+import styles from "./serverF/chatServer/css/ID.module.css";
 
 export default function ID() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
-  const [serverCode, setServerCode] = useState("");
+  const [confirmation, setConfirmation] = useState(null);
   const [timer, setTimer] = useState(0);
   const [isVerified, setIsVerified] = useState(false);
   const [foundID, setFoundID] = useState("");
@@ -20,22 +24,31 @@ export default function ID() {
 
   const handleSendCode = async () => {
     if (!phoneNumber) return alert("전화번호를 입력해주세요.");
+    const fullPhone = `+82${phoneNumber.replace(/-/g, "").slice(1)}`;
+
     try {
-      const res = await axios.post("/api/send-code", { phone: phoneNumber });
-      setServerCode(res.data.code);
+      window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
+        size: "invisible",
+      }, auth);
+
+      const confirmationResult = await signInWithPhoneNumber(auth, fullPhone, window.recaptchaVerifier);
+      setConfirmation(confirmationResult);
       setTimer(180);
       alert("인증번호가 발송되었습니다.");
     } catch (err) {
-      console.error(err);
+      console.error("❌ 인증번호 전송 실패:", err);
       alert("인증번호 발송 실패");
     }
   };
 
-  const handleVerify = () => {
-    if (verificationCode === serverCode) {
+  const handleVerify = async () => {
+    if (!confirmation) return alert("인증번호 요청이 필요합니다.");
+    try {
+      await confirmation.confirm(verificationCode);
       setIsVerified(true);
       alert("인증 성공");
-    } else {
+    } catch (error) {
+      console.error("❌ 인증 실패:", error);
       alert("인증 실패");
     }
   };
@@ -84,6 +97,7 @@ export default function ID() {
           )}
         </div>
       </div>
+      <div id="recaptcha-container"></div>
     </div>
   );
 }
