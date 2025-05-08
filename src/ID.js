@@ -1,6 +1,6 @@
 // ✅ Firebase 연동된 ID.js (아이디 찾기)
 import React, { useState, useEffect } from "react";
-import { auth } from "./firebase";
+import { getFirebaseAuth } from "./firebase";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import axios from "axios";
 import styles from "./serverF/chatServer/css/ID.module.css";
@@ -12,6 +12,7 @@ export default function ID() {
   const [timer, setTimer] = useState(0);
   const [isVerified, setIsVerified] = useState(false);
   const [foundID, setFoundID] = useState("");
+  const auto = getFirebaseAuth();
 
   useEffect(() => {
     if (timer > 0) {
