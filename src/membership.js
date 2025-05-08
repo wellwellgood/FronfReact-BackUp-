@@ -112,61 +112,35 @@ const Membership = () => {
 
   // Send verification code
   const handleSendCode = async () => {
-    if (initializationStatus !== "success" || !recaptchaVerifier) {
+    if (initializationStatus !== "success") {
       alert("인증 시스템이 준비되지 않았습니다. 다시 시도해주세요.");
       return;
     }
-    
+  
+    if (!auth) {
+      alert("Firebase 인증 정보가 누락되었습니다.");
+      return;
+    }
+  
+    if (!recaptchaVerifier) {
+      alert("reCAPTCHA가 준비되지 않았습니다.");
+      return;
+    }
+  
     setIsLoading(true);
-    
+  
     try {
-      // Validate phone number
       const phoneNumber = formatPhoneNumber();
       if (!/^\+82\d{9,10}$/.test(phoneNumber)) {
         throw new Error("올바른 휴대폰 번호를 입력해주세요");
       }
-      
-      // Send verification code using the already initialized reCAPTCHA verifier
+  
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
       setConfirmation(confirmationResult);
       alert("✅ 인증번호가 전송되었습니다");
     } catch (error) {
       console.error("❌ Failed to send verification code:", error);
-      
-      // Format error message based on error code
-      let errorMessage = "인증번호 전송에 실패했습니다";
-      
-      if (error.code === 'auth/invalid-phone-number') {
-        errorMessage = "유효하지 않은 전화번호 형식입니다";
-      } else if (error.code === 'auth/captcha-check-failed') {
-        errorMessage = "reCAPTCHA 검증에 실패했습니다";
-      } else if (error.code === 'auth/quota-exceeded') {
-        errorMessage = "너무 많은 요청이 발생했습니다. 잠시 후 다시 시도해주세요";
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
-      alert(`❌ ${errorMessage}`);
-      
-      // Create a new reCAPTCHA verifier on failure
-      try {
-        if (recaptchaVerifier) {
-          recaptchaVerifier.clear();
-        }
-        
-        const newVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-          size: 'invisible',
-          callback: () => {
-            console.log("✅ New reCAPTCHA verified");
-          }
-        });
-        
-        setRecaptchaVerifier(newVerifier);
-      } catch (resetError) {
-        console.warn("⚠️ Failed to reset reCAPTCHA:", resetError);
-        setInitializationStatus("error");
-        setErrorMessage("reCAPTCHA 초기화에 실패했습니다. 페이지를 새로고침해주세요.");
-      }
+      alert("❌ 인증번호 전송 실패: " + (error.message || "알 수 없는 오류"));
     } finally {
       setIsLoading(false);
     }
