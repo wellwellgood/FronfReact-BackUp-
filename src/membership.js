@@ -152,7 +152,7 @@ const Membership = () => {
     setIsLoading(true);
 
     try {
-      const mariaRes = await axios.post("/api/auth/register", {
+      const mariaRes = await axios.post("https://react-server-wmqa.onrender.com/", {
         username: formData.username,
         name: formData.name,
         password: formData.password,
