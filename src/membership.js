@@ -24,6 +24,7 @@ const Membership = () => {
   const [initializationStatus, setInitializationStatus] = useState("pending");
   const [errorMessage, setErrorMessage] = useState("");
   const [recaptchaVerifier, setRecaptchaVerifier] = useState(null);
+  const BASE_URL = "https://react-server-wmqa.onrender.com";
 
   useEffect(() => {
     let isMounted = true;
@@ -152,7 +153,7 @@ const Membership = () => {
     setIsLoading(true);
 
     try {
-      const mariaRes = await axios.post("https://react-server-wmqa.onrender.com/", {
+      const mariaRes = await axios.post("${BASE_URL}/api/auth/register", {
         username: formData.username,
         name: formData.name,
         password: formData.password,
