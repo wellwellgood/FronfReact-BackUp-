@@ -153,7 +153,7 @@ const Membership = () => {
     setIsLoading(true);
 
     try {
-      const mariaRes = await axios.post('${BASE_URL}/api/auth/register', {
+      const mariaRes = await axios.post(`${BASE_URL}/api/auth/register`, {
         username: formData.username,
         name: formData.name,
         password: formData.password,
