@@ -22,6 +22,9 @@ let app = null;
 let auth = null;
 let db = null;
 
+
+
+console.log("🔥 FIREBASE KEY:", process.env.REACT_APP_FIREBASE_API_KEY);
 /**
  * Initialize Firebase services with proper error handling
  * @returns {Promise<{app, auth, db}>} - Initialized Firebase services
