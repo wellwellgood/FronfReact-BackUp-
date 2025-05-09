@@ -8,6 +8,8 @@ dotenv.config();
 
 console.log(process.env.REACT_APP_FIREBASE_API_KEY);
 
+console.log(process.env.REACT_APP_FIREBASE_API_KEY);
+
 // Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
