@@ -1,7 +1,7 @@
+i// membership.js - 병합 완료된 최종본
 import React, { useState, useEffect } from "react";
-import { initializeFirebase, getFirebaseAuth } from "./firebase";
+import { initializeFirebase } from "./firebase";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
-import { doc, setDoc, getFirestore } from "firebase/firestore";
 import axios from "axios";
 import styles from "./membership.module.css";
 
@@ -22,24 +22,17 @@ const Membership = () => {
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [initializationStatus, setInitializationStatus] = useState("pending");
-  const [errorMessage, setErrorMessage] = useState("");
   const [recaptchaVerifier, setRecaptchaVerifier] = useState(null);
-  const BASE_URL = "https://react-server-wmqa.onrender.com";
 
   useEffect(() => {
     let isMounted = true;
 
     const initialize = async () => {
       try {
-        console.log("Firebase 초기화 시작 중...");
-        // Firebase 초기화
         const { auth: authInstance } = await initializeFirebase();
         if (!isMounted) return;
-        
-        console.log("Firebase 초기화 완료, reCAPTCHA 설정 중...");
-        
-        // reCAPTCHA 설정 - 수정된 부분 (Firebase 인스턴스에서 reCAPTCHA 생성)
-        const verifier = new RecaptchaVerifier("recaptcha-container", {
+
+        const verifier = new RecaptchaVerifier(authInstance, "recaptcha-container", {
           size: "invisible",
           callback: () => {
             console.log("✅ reCAPTCHA verified");
@@ -47,16 +40,13 @@ const Membership = () => {
           "expired-callback": () => {
             console.log("⚠️ reCAPTCHA expired");
           }
-        }, authInstance);
+        });
 
         setAuth(authInstance);
         setRecaptchaVerifier(verifier);
         setInitializationStatus("success");
-        console.log("✅ Firebase initialization successful");
       } catch (error) {
-        console.error("❌ Firebase initialization failed:", error);
-        if (!isMounted) return;
-        setErrorMessage(`초기화 실패: ${error.message || "알 수 없는 오류"}`);
+        console.error("초기화 실패:", error);
         setInitializationStatus("error");
       }
     };
@@ -68,9 +58,8 @@ const Membership = () => {
       if (recaptchaVerifier) {
         try {
           recaptchaVerifier.clear();
-          console.log("✅ reCAPTCHA verifier cleared");
         } catch (error) {
-          console.warn("⚠️ reCAPTCHA cleanup error:", error);
+          console.warn("reCAPTCHA cleanup error:", error);
         }
       }
     };
@@ -84,9 +73,8 @@ const Membership = () => {
   const formatPhoneNumber = () => {
     const { phone1, phone2, phone3 } = formData;
     const formattedPhone = phone1.startsWith("0") 
-      ? `+82${phone1.slice(1)}${phone2}${phone3}` 
+      ? `+82${phone1.slice(1)}${phone2}${phone3}`
       : `+82${phone1}${phone2}${phone3}`;
-    console.log("📱 Formatted phone number:", formattedPhone);
     return formattedPhone;
   };
 
@@ -105,27 +93,12 @@ const Membership = () => {
 
     try {
       const phoneNumber = formatPhoneNumber();
-      console.log("전화번호 인증 시작:", phoneNumber);
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
       setConfirmation(confirmationResult);
       alert("✅ 인증번호가 전송되었습니다");
     } catch (error) {
       console.error("❌ 인증번호 전송 실패:", error);
       alert("❌ 인증번호 전송 실패: " + (error.message || "알 수 없는 오류"));
-      
-      // 오류 후 reCAPTCHA 재설정
-      try {
-        if (recaptchaVerifier) {
-          recaptchaVerifier.clear();
-        }
-        const newVerifier = new RecaptchaVerifier("recaptcha-container", {
-          size: "invisible",
-          callback: () => console.log("✅ reCAPTCHA verified"),
-        }, auth);
-        setRecaptchaVerifier(newVerifier);
-      } catch (verifierError) {
-        console.error("❌ reCAPTCHA 재설정 실패:", verifierError);
-      }
     } finally {
       setIsLoading(false);
     }
@@ -168,7 +141,7 @@ const Membership = () => {
     setIsLoading(true);
 
     try {
-      const mariaRes = await axios.post(`${BASE_URL}/api/auth/register`, {
+      const mariaRes = await axios.post("https://react-server-wmqa.onrender.com/api/auth/register", {
         username: formData.username,
         name: formData.name,
         password: formData.password,
@@ -177,14 +150,6 @@ const Membership = () => {
       });
 
       if (mariaRes.data?.message === "회원가입 성공") {
-        const db = getFirestore();
-        await setDoc(doc(db, "users", firebaseUser.uid), {
-          uid: firebaseUser.uid,
-          username: formData.username,
-          name: formData.name,
-          phone: fullPhone,
-          createdAt: new Date(),
-        });
         alert("🎉 회원가입이 완료되었습니다!");
         window.location.href = "/";
       } else {
