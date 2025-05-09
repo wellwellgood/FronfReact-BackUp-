@@ -3,21 +3,16 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
-import dotenv from "dotenv";
-dotenv.config();
 
-console.log(process.env.REACT_APP_FIREBASE_API_KEY);
-
-console.log(process.env.REACT_APP_FIREBASE_API_KEY);
-
-// Firebase configuration
+// Firebase configuration - 직접 값을 하드코딩
+// React 환경변수는 'REACT_APP_' 접두사를 사용하며 process.env로 접근해야 함
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  apiKey: "AIzaSyAKaKKJ9RmvW_KagTZoM8gMM2-dVqWmXyA",
+  authDomain: "verifycode-a2f69.firebaseapp.com",
+  projectId: "verifycode-a2f69",
+  storageBucket: "verifycode-a2f69.appspot.com",
+  messagingSenderId: "1003002699557",
+  appId: "1:1003002699557:web:cfb755bed47b2836fb44cc",
 };
 
 // Initialization tracking
@@ -28,9 +23,6 @@ let app = null;
 let auth = null;
 let db = null;
 
-
-
-console.log("🔥 FIREBASE KEY:", process.env.REACT_APP_FIREBASE_API_KEY);
 /**
  * Initialize Firebase services with proper error handling
  * @returns {Promise<{app, auth, db}>} - Initialized Firebase services
@@ -52,6 +44,7 @@ const initializeFirebase = () => {
   // Create initialization promise
   initializationPromise = new Promise((resolve, reject) => {
     try {
+      console.log("Firebase 초기화 시작...");
       // Initialize Firebase app
       app = initializeApp(firebaseConfig);
       console.log("✅ Firebase app initialized");
@@ -68,7 +61,7 @@ const initializeFirebase = () => {
       if (process.env.NODE_ENV === 'production') {
         try {
           initializeAppCheck(app, {
-            provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_KEY),
+            provider: new ReCaptchaV3Provider("6LevzjArAAAAACDePfgGbA1z-Voyhv-zqh5ktyVH"),
             isTokenAutoRefreshEnabled: true,
           });
           console.log("✅ Firebase AppCheck initialized");

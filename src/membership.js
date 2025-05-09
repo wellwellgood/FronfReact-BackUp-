@@ -31,10 +31,15 @@ const Membership = () => {
 
     const initialize = async () => {
       try {
+        console.log("Firebase 초기화 시작 중...");
+        // Firebase 초기화
         const { auth: authInstance } = await initializeFirebase();
         if (!isMounted) return;
-
-        const verifier = new RecaptchaVerifier(authInstance, "recaptcha-container", {
+        
+        console.log("Firebase 초기화 완료, reCAPTCHA 설정 중...");
+        
+        // reCAPTCHA 설정 - 수정된 부분 (Firebase 인스턴스에서 reCAPTCHA 생성)
+        const verifier = new RecaptchaVerifier("recaptcha-container", {
           size: "invisible",
           callback: () => {
             console.log("✅ reCAPTCHA verified");
@@ -42,7 +47,7 @@ const Membership = () => {
           "expired-callback": () => {
             console.log("⚠️ reCAPTCHA expired");
           }
-        });
+        }, authInstance);
 
         setAuth(authInstance);
         setRecaptchaVerifier(verifier);
@@ -100,12 +105,27 @@ const Membership = () => {
 
     try {
       const phoneNumber = formatPhoneNumber();
+      console.log("전화번호 인증 시작:", phoneNumber);
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
       setConfirmation(confirmationResult);
       alert("✅ 인증번호가 전송되었습니다");
     } catch (error) {
       console.error("❌ 인증번호 전송 실패:", error);
       alert("❌ 인증번호 전송 실패: " + (error.message || "알 수 없는 오류"));
+      
+      // 오류 후 reCAPTCHA 재설정
+      try {
+        if (recaptchaVerifier) {
+          recaptchaVerifier.clear();
+        }
+        const newVerifier = new RecaptchaVerifier("recaptcha-container", {
+          size: "invisible",
+          callback: () => console.log("✅ reCAPTCHA verified"),
+        }, auth);
+        setRecaptchaVerifier(newVerifier);
+      } catch (verifierError) {
+        console.error("❌ reCAPTCHA 재설정 실패:", verifierError);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -184,6 +204,7 @@ const Membership = () => {
       <form className={styles.IDform} onSubmit={handleSubmit}>
         <div className={styles.IDarea}>
           <h1>회원가입</h1>
+          {errorMessage && <p className={styles.errorMessage} style={{ color: "red" }}>{errorMessage}</p>}
           <input 
             type="text" 
             name="username" 
@@ -323,7 +344,7 @@ const Membership = () => {
         </div>
       </form>
 
-      {/* reCAPTCHA container - Empty div for reCAPTCHA to render into */}
+      {/* reCAPTCHA container */}
       <div id="recaptcha-container"></div>
     </div>
   );
