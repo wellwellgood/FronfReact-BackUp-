@@ -22,6 +22,3 @@ node_modules/
 # OS 관련
 .DS_Store
 Thumbs.db
-
-#서버용 폴더
-/src/serverF
